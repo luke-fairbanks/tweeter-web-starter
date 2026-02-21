@@ -1,25 +1,22 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../model.service/FollowService";
+import { MessageView, Presenter } from "./Presenter";
 
-export interface UserInfoView {
+export interface UserInfoView extends MessageView {
   setIsFollower: (isFollower: boolean) => void;
   setFolloweeCount: (count: number) => void;
   setFollowerCount: (count: number) => void;
   setIsLoading: (isLoading: boolean) => void;
-  displayInfoMessage: (message: string, duration: number) => string;
-  displayErrorMessage: (message: string) => void;
-  deleteMessage: (messageId: string) => void;
 }
 
-export class UserInfoPresenter {
-  private view: UserInfoView;
+export class UserInfoPresenter extends Presenter<UserInfoView> {
   private followService: FollowService;
 
   private followerCount: number = 0;
   private followeeCount: number = 0;
 
   public constructor(view: UserInfoView) {
-    this.view = view;
+    super(view);
     this.followService = new FollowService();
   }
 
@@ -35,111 +32,126 @@ export class UserInfoPresenter {
     ]);
   }
 
-  public async setIsFollowerStatus  (
+  public async setIsFollowerStatus(
     authToken: AuthToken,
     currentUser: User,
     displayedUser: User
   ) {
-    try {
-      if (currentUser.alias === displayedUser.alias) {
-        this.view.setIsFollower(false);
-      } else {
-        this.view.setIsFollower(
-          await this.followService.getIsFollowerStatus(authToken, currentUser, displayedUser)
+    await this.doFailureReportingOperation(
+      async () => {
+        if (currentUser.alias === displayedUser.alias) {
+          this.view.setIsFollower(false);
+        } else {
+          this.view.setIsFollower(
+            await this.followService.getIsFollowerStatus(
+              authToken,
+              currentUser,
+              displayedUser
+            )
+          );
+        }
+      },
+      "determine follower status"
+    );
+  }
+
+  public async setNumbFollowees(
+    authToken: AuthToken,
+    displayedUser: User
+  ) {
+    await this.doFailureReportingOperation(
+      async () => {
+        this.followeeCount = await this.followService.getFolloweeCount(
+          authToken,
+          displayedUser
         );
-      }
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to determine follower status because of exception: ${error}`
-      );
-    }
-  };
+        this.view.setFolloweeCount(this.followeeCount);
+      },
+      "get followees count"
+    );
+  }
 
-  public async setNumbFollowees (
+  public async setNumbFollowers(
     authToken: AuthToken,
     displayedUser: User
   ) {
-    try {
-      this.followeeCount = await this.followService.getFolloweeCount(authToken, displayedUser);
-      this.view.setFolloweeCount(this.followeeCount);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to get followees count because of exception: ${error}`
-      );
-    }
-  };
-
-  public async setNumbFollowers (
-    authToken: AuthToken,
-    displayedUser: User
-  ) {
-    try {
-      this.followerCount = await this.followService.getFollowerCount(authToken, displayedUser);
-      this.view.setFollowerCount(this.followerCount);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to get followers count because of exception: ${error}`
-      );
-    }
-  };
+    await this.doFailureReportingOperation(
+      async () => {
+        this.followerCount = await this.followService.getFollowerCount(
+          authToken,
+          displayedUser
+        );
+        this.view.setFollowerCount(this.followerCount);
+      },
+      "get followers count"
+    );
+  }
 
   public async follow(
     authToken: AuthToken,
     userToFollow: User
-  ) {
-    let followingUserToast = "";
-    try {
-        this.view.setIsLoading(true);
-        followingUserToast = this.view.displayInfoMessage(`Following ${userToFollow.name}...`, 0);
-
-        const [followerCount, followeeCount] = await this.followService.follow(
-            authToken,
-            userToFollow
-        );
-
-        this.followerCount = followerCount;
-        this.followeeCount = followeeCount;
-
-        this.view.setIsFollower(true);
-        this.view.setFollowerCount(this.followerCount);
-        this.view.setFolloweeCount(this.followeeCount);
-    } catch (error) {
-        this.view.displayErrorMessage(
-            `Failed to follow user because of exception: ${error}`
-        );
-    } finally {
-        this.view.deleteMessage(followingUserToast);
-        this.view.setIsLoading(false);
-    }
+  ): Promise<void> {
+    await this.doFollowOperation(
+      authToken,
+      userToFollow,
+      (token, user) => this.followService.follow(token, user),
+      `Following ${userToFollow.name}...`,
+      "follow user",
+      true
+    );
   }
 
   public async unfollow(
     authToken: AuthToken,
     userToUnfollow: User
-  ) {
-    let unfollowingUserToast = "";
-    try {
-        this.view.setIsLoading(true);
-        unfollowingUserToast = this.view.displayInfoMessage(`Unfollowing ${userToUnfollow.name}...`, 0);
+  ): Promise<void> {
+    await this.doFollowOperation(
+      authToken,
+      userToUnfollow,
+      (token, user) => this.followService.unfollow(token, user),
+      `Unfollowing ${userToUnfollow.name}...`,
+      "unfollow user",
+      false
+    );
+  }
 
-        const [followerCount, followeeCount] = await this.followService.unfollow(
-            authToken,
-            userToUnfollow
+  private async doFollowOperation(
+    authToken: AuthToken,
+    targetUser: User,
+    followOperation: (
+      authToken: AuthToken,
+      user: User
+    ) => Promise<[followerCount: number, followeeCount: number]>,
+    infoMessage: string,
+    operationDescription: string,
+    isFollower: boolean
+  ): Promise<void> {
+    let followToastId = "";
+
+    await this.doFailureReportingOperation(
+      async () => {
+        this.view.setIsLoading(true);
+        followToastId = this.view.displayInfoMessage(infoMessage, 0);
+
+        const [followerCount, followeeCount] = await followOperation(
+          authToken,
+          targetUser
         );
 
         this.followerCount = followerCount;
         this.followeeCount = followeeCount;
 
-        this.view.setIsFollower(false);
+        this.view.setIsFollower(isFollower);
         this.view.setFollowerCount(this.followerCount);
         this.view.setFolloweeCount(this.followeeCount);
-    } catch (error) {
-        this.view.displayErrorMessage(
-            `Failed to unfollow user because of exception: ${error}`
-        );
-    } finally {
-        this.view.deleteMessage(unfollowingUserToast);
+      },
+      operationDescription,
+      () => {
+        if (followToastId) {
+          this.view.deleteMessage(followToastId);
+        }
         this.view.setIsLoading(false);
-    }
+      }
+    );
   }
 }

@@ -1,57 +1,53 @@
-import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model.service/UserService";
 import { Buffer } from "buffer";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface RegisterView {
-  updateUserInfo: (
-    currentUser: User,
-    displayedUser: User,
-    authToken: AuthToken,
-    remember: boolean
-  ) => void;
-  displayErrorMessage: (message: string) => void;
-  navigate: (url: string) => void;
+export interface RegisterView extends AuthenticationView {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
   setImageFileExtension: (extension: string) => void;
-  setIsLoading: (isLoading: boolean) => void;
   clearImage: () => void;
 }
 
-export class RegisterPresenter {
-    private view: RegisterView;
-    private userService: UserService;
+export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
+  private userService: UserService;
 
-    public constructor(view: RegisterView) {
-        this.view = view;
-        this.userService = new UserService();
+  public constructor(view: RegisterView) {
+    super(view);
+    this.userService = new UserService();
+  }
+
+  public isRegisterDisabled(
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageUrl: string,
+    imageFileExtension: string
+  ): boolean {
+    return (
+      !firstName ||
+      !lastName ||
+      !alias ||
+      !password ||
+      !imageUrl ||
+      !imageFileExtension
+    );
+  }
+
+  public async handleImageFile(file: File | undefined): Promise<void> {
+    if (!file) {
+      this.view.clearImage();
+      return;
     }
 
-    public isRegisterDisabled(
-      firstName: string,
-      lastName: string,
-      alias: string,
-      password: string,
-      imageUrl: string,
-      imageFileExtension: string
-    ): boolean {
-      return (
-        !firstName ||
-        !lastName ||
-        !alias ||
-        !password ||
-        !imageUrl ||
-        !imageFileExtension
-      );
-    }
+    let isSuccessful = false;
 
-    public async handleImageFile(file: File | undefined): Promise<void> {
-      if (!file) {
-        this.view.clearImage();
-        return;
-      }
-
-      try {
+    await this.doFailureReportingOperation(
+      async () => {
         this.view.setImageUrl(URL.createObjectURL(file));
 
         const imageStringBase64 = await this.readAsDataUrl(file);
@@ -67,44 +63,41 @@ export class RegisterPresenter {
 
         const fileExtension = this.getFileExtension(file.name);
         this.view.setImageFileExtension(fileExtension ?? "");
-      } catch (error) {
-        this.view.displayErrorMessage(
-          `Failed to process image because of exception: ${error}`
-        );
-        this.view.clearImage();
+        isSuccessful = true;
+      },
+      "process image",
+      () => {
+        if (!isSuccessful) {
+          this.view.clearImage();
+        }
       }
-    }
+    );
+  }
 
-    public async doRegister (
-        firstName: string,
-        lastName: string,
-        alias: string,
-        password: string,
-        imageBytes: Uint8Array,
-        imageFileExtension: string,
-        rememberMe: boolean
-    ): Promise<void> {
-    try {
-      this.view.setIsLoading(true);
-      const [user, authToken] = await this.userService.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension
-      );
-
-      this.view.updateUserInfo(user, user, authToken, rememberMe);
-      this.view.navigate(`/feed/${user.alias}`);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this.view.setIsLoading(false);
-    }
-  };
+  public async doRegister(
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageBytes: Uint8Array,
+    imageFileExtension: string,
+    rememberMe: boolean
+  ): Promise<void> {
+    await this.doAuthenticationOperation(
+      () =>
+        this.userService.register(
+          firstName,
+          lastName,
+          alias,
+          password,
+          imageBytes,
+          imageFileExtension
+        ),
+      rememberMe,
+      "register user",
+      (user) => `/feed/${user.alias}`
+    );
+  }
 
   private getFileExtension(fileName: string): string | undefined {
     return fileName.split(".").pop();
