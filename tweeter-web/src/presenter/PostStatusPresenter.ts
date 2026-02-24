@@ -8,19 +8,22 @@ export interface PostStatusView extends MessageView{
 }
 
 export class PostStatusPresenter extends Presenter<PostStatusView> {
-    private statusService: StatusService;
+    private _statusService: StatusService;
 
     public constructor(view: PostStatusView) {
         super(view)
-        this.statusService = new StatusService();
+        this._statusService = new StatusService();
+    }
+
+    public get statusService(): StatusService {
+        return this._statusService;
     }
 
     public isPostDisabled(
         post: string,
-        authToken: AuthToken | null,
-        currentUser: User | null
+        isLoading: boolean,
     ): boolean {
-        return !post.trim() || !authToken || !currentUser;
+        return !post.trim() || isLoading;
     }
 
     public async submitPost (

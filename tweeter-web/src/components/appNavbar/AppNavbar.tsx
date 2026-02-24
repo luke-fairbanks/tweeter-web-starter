@@ -5,7 +5,7 @@ import Image from "react-bootstrap/Image";
 import { useState } from "react";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserHooks";
-import { LogoutPresenter, LogoutView } from "../../presenter/LogoutPresenter";
+import { AppNavbarPresenter, AppNavbarView } from "../../presenter/AppNavbarPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();
@@ -14,7 +14,7 @@ const AppNavbar = () => {
   const navigate = useNavigate();
   const { displayInfoMessage, displayErrorMessage, deleteMessage } = useMessageActions();
 
-  const listener: LogoutView = {
+  const listener: AppNavbarView = {
     displayInfoMessage: displayInfoMessage,
     deleteMessage: deleteMessage,
     displayErrorMessage: displayErrorMessage,
@@ -22,7 +22,7 @@ const AppNavbar = () => {
     navigate: navigate,
   };
 
-  const [presenter] = useState(new LogoutPresenter(listener));
+  const [presenter] = useState(new AppNavbarPresenter(listener));
 
   const logOut = async () => {
     if (authToken) {

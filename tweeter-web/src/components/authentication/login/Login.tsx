@@ -10,6 +10,7 @@ import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -29,7 +30,7 @@ const Login = (props: Props) => {
     setIsLoading: setIsLoading
   }
 
-  const [presenter] = useState(new LoginPresenter(listener));
+  const [presenter] = useState(props.presenter || new LoginPresenter(listener));
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key == "Enter" && !presenter.isLoginDisabled(alias, password)) {

@@ -10,5 +10,8 @@
   "dependencies": {
     "rimraf": "^5.0.5",
     "vite-plugin-dts": "^3.7.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
