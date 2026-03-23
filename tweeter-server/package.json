@@ -1,0 +1,20 @@
+{
+  "name": "tweeter-server",
+  "version": "1.0.0",
+  "description": "Server module for Tweeter",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconf.json"
+  },
+  "dependencies": {
+    "@types/uuid": "^8.3.4",
+    "date-fns": "^4.1.0",
+    "tweeter-shared": "file:../tweeter-shared",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.114",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

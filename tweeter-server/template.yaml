@@ -1,0 +1,216 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Tweeter Server API
+
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE,PATCH'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+  Function:
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    Timeout: 10
+    MemorySize: 256
+    CodeUri: ./dist
+
+Resources:
+  TweeterDependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: TweeterDependenciesLayer
+      Description: Dependencies for tweeter lambdas
+      ContentUri: ./layer/
+      CompatibleRuntimes:
+        - nodejs20.x
+        - nodejs18.x
+      RetentionPolicy: Retain
+
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/user/login.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: post
+
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/user/register.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /register
+            Method: post
+
+  GetUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/user/getUser.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /user/get
+            Method: post
+
+  LogoutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/user/logout.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /logout
+            Method: post
+
+  LoadMoreFeedItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/status/loadMoreFeedItems.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /status/feed/list
+            Method: post
+
+  LoadMoreStoryItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/status/loadMoreStoryItems.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /status/story/list
+            Method: post
+
+  PostStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/status/postStatus.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /status/post
+            Method: post
+
+  LoadMoreFolloweesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/loadMoreFollowees.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /followee/list
+            Method: post
+
+  LoadMoreFollowersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/loadMoreFollowers.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /follower/list
+            Method: post
+
+  GetFolloweeCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/getFolloweeCount.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /followee/count
+            Method: post
+
+  GetFollowerCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/getFollowerCount.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /follower/count
+            Method: post
+
+  GetIsFollowerStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/getIsFollowerStatus.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /follow/status
+            Method: post
+
+  FollowFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/follow.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /follow
+            Method: post
+
+  UnfollowFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda/follow/unfollow.handler
+      Layers:
+        - !Ref TweeterDependenciesLayer
+      Events:
+        HttpApiEvent:
+          Type: Api
+          Properties:
+            Path: /unfollow
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

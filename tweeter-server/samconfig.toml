@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "tweeter-server"
+s3_bucket = "cs-340-tweeter-lukef"
+s3_prefix = "tweeter-server"
+region = "us-west-2"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = false

@@ -11,6 +11,7 @@
     "@types/react-dom": "^18.2.19",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
+    "isomorphic-fetch": "^3.0.0",
     "node": "^20.11.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
@@ -19,6 +20,7 @@
     "react-router-dom": "^6.22.2",
     "tweeter-shared": "file:../tweeter-shared",
     "typescript": "^4.9.5",
+    "uuid": "^8.3.2",
     "vite-plugin-commonjs": "^0.8.2",
     "web-vitals": "^2.1.4"
   },
@@ -54,8 +56,10 @@
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.0",
     "@testing-library/user-event": "^14.5.1",
+    "@types/isomorphic-fetch": "^0.0.39",
     "@types/jest": "^29.5.8",
     "@types/node": "^20.11.24",
+    "@types/uuid": "^8.3.4",
     "@typestrong/ts-mockito": "^2.7.12",
     "@vitejs/plugin-react": "^4.2.1",
     "babel-jest": "^29.7.0",
@@ -70,15 +74,16 @@
     "verbose": true,
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
-        "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js"
+      "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js",
+      "^uuid$": "<rootDir>/../node_modules/uuid/dist/index.js"
     },
     "testMatch": [
-        "<rootDir>/test/**/*.test.tsx",
-        "<rootDir>/test/**/*.test.ts"
+      "<rootDir>/test/**/*.test.tsx",
+      "<rootDir>/test/**/*.test.ts"
     ],
     "transform": {
-        "^.+\\.tsx?$": "ts-jest",
-        "\\.js$": "babel-jest"
+      "^.+\\.tsx?$": "ts-jest",
+      "\\.js$": "babel-jest"
     }
-}
+  }
 }
