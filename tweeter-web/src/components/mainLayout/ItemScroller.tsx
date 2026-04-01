@@ -16,6 +16,8 @@ const ItemScroller = <T, P extends PagedItemPresenter<T, Service>>(
 ) => {
   const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<T[]>([]);
+  const isLoadingRef = useRef(false);
+  const lastLoadedAliasRef = useRef<string | null>(null);
   const { displayedUser, authToken } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();
@@ -38,12 +40,33 @@ const ItemScroller = <T, P extends PagedItemPresenter<T, Service>>(
       displayedUserAliasParam,
       displayedUser
     );
-  }, [authToken, displayedUserAliasParam, displayedUser]);
+  }, [authToken, displayedUserAliasParam, displayedUser?.alias]);
 
   useEffect(() => {
+    if (!authToken || !displayedUser) {
+      setItems(() => []);
+      presenterRef.current!.reset();
+      lastLoadedAliasRef.current = null;
+      isLoadingRef.current = false;
+      return;
+    }
+
+    // Wait until route resolution has updated displayedUser before loading.
+    if (
+      displayedUserAliasParam &&
+      displayedUserAliasParam !== displayedUser.alias
+    ) {
+      return;
+    }
+
+    if (lastLoadedAliasRef.current === displayedUser.alias) {
+      return;
+    }
+
     reset();
+    lastLoadedAliasRef.current = displayedUser.alias;
     loadMoreItems();
-  }, [displayedUser]);
+  }, [authToken, displayedUser?.alias, displayedUserAliasParam]);
 
   const reset = () => {
     setItems(() => []);
@@ -51,7 +74,16 @@ const ItemScroller = <T, P extends PagedItemPresenter<T, Service>>(
   };
 
   const loadMoreItems = async () => {
-    await presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias);
+    if (!authToken || !displayedUser || isLoadingRef.current) {
+      return;
+    }
+
+    isLoadingRef.current = true;
+    try {
+      await presenterRef.current!.loadMoreItems(authToken, displayedUser.alias);
+    } finally {
+      isLoadingRef.current = false;
+    }
   };
 
   return (

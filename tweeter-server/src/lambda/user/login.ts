@@ -1,11 +1,11 @@
 import { LoginRequest, AuthResponse } from "tweeter-shared";
-import { UserService } from "../../service/UserService";
+import { ServiceFactory } from "../../factory/ServiceFactory";
 
 export const handler = async (event: any) => {
   let response: AuthResponse;
   try {
     const request: LoginRequest = JSON.parse(event.body);
-    const userService = new UserService();
+    const userService = ServiceFactory.createUserService();
     const [user, authToken] = await userService.login(request.alias, request.password);
     
     response = {
@@ -27,7 +27,7 @@ export const handler = async (event: any) => {
       token: null
     };
     return {
-      statusCode: 500,
+      statusCode: err.message?.includes("[Unauthorized]") ? 401 : err.message?.includes("[BadRequest]") ? 400 : 500,
       headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify(response)
     };

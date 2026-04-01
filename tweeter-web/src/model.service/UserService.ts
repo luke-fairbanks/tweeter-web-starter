@@ -6,18 +6,33 @@ import { ServerFacade } from "../network/ServerFacade";
 
 export class UserService implements Service{
   private facade = new ServerFacade();
+
+  private normalizeAlias(alias: string): string {
+    if (!alias) {
+      return alias;
+    }
+
+    return alias.startsWith("@") ? alias : `@${alias}`;
+  }
+
   public async getUser(
     authToken: AuthToken,
     alias: string
   ): Promise<User | null> {
-    return await this.facade.getUser({ token: authToken.token, alias });
+    return await this.facade.getUser({
+      token: authToken.token,
+      alias: this.normalizeAlias(alias),
+    });
   };
 
   public async login(
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    return await this.facade.login({ alias, password });
+    return await this.facade.login({
+      alias: this.normalizeAlias(alias),
+      password,
+    });
   };
 
   public async logout(authToken: AuthToken): Promise<void> {
@@ -36,7 +51,7 @@ export class UserService implements Service{
     return await this.facade.register({
       firstName,
       lastName,
-      alias,
+      alias: this.normalizeAlias(alias),
       password,
       userImageBytes: imageStringBase64,
       imageFileExtension

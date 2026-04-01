@@ -1,11 +1,13 @@
 import { PagedItemRequest, PagedItemResponse, AuthToken, User } from "tweeter-shared";
-import { FollowService } from "../../service/FollowService";
+import { ServiceFactory } from "../../factory/ServiceFactory";
 
 export const handler = async (event: any) => {
   let response: PagedItemResponse;
   try {
     const request: PagedItemRequest = JSON.parse(event.body);
-    const followService = new FollowService();
+    const authorizationService = ServiceFactory.createAuthorizationService();
+    await authorizationService.verifySession(request.token);
+    const followService = ServiceFactory.createFollowService();
     const token = new AuthToken(request.token, Date.now());
     
     const lastItem = request.lastItem ? User.fromJson(JSON.stringify(request.lastItem)) : null;
@@ -36,7 +38,7 @@ export const handler = async (event: any) => {
       hasMore: false
     };
     return {
-      statusCode: 500,
+      statusCode: err.message?.includes("[Unauthorized]") ? 401 : err.message?.includes("[BadRequest]") ? 400 : 500,
       headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify(response)
     };

@@ -1,0 +1,23 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1017.0",
+    "@aws-sdk/client-s3": "^3.1017.0",
+    "@aws-sdk/lib-dynamodb": "^3.1017.0",
+    "bcryptjs": "^3.0.3",
+    "date-fns": "^4.1.0",
+    "tweeter-shared": "^0.0.0",
+    "typescript": "^5.9.3",
+    "undici-types": "^6.21.0",
+    "uuid": "^8.3.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

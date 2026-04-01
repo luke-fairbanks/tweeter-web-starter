@@ -23,7 +23,9 @@ import {
 import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
-  private SERVER_URL = "https://yunyfgvwob.execute-api.us-west-2.amazonaws.com/Prod";
+  private SERVER_URL =
+    (import.meta as any).env?.VITE_API_URL ||
+    "https://8ziuvkvpge.execute-api.us-west-2.amazonaws.com/Prod";
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
   public async login(request: LoginRequest): Promise<[User, AuthToken]> {

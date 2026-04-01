@@ -25,7 +25,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --port 4900",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "reload": "npm run build && npm run serve",

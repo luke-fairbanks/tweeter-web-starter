@@ -1,26 +1,30 @@
-import { User, AuthToken, FakeData } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
+import { AuthDAO } from "../dao/interfaces/AuthDAO";
+import { UserDAO } from "../dao/interfaces/UserDAO";
 
 export class UserService {
+  public constructor(private userDAO: UserDAO, private authDAO: AuthDAO) {}
+
+  private normalizeAlias(alias: string): string {
+    return alias.startsWith("@") ? alias : `@${alias}`;
+  }
+
   public async getUser(
     authToken: AuthToken,
     alias: string
   ): Promise<User | null> {
-    return FakeData.instance.findUserByAlias(alias);
+    return this.userDAO.getUserByAlias(this.normalizeAlias(alias));
   }
 
   public async login(
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    const user = FakeData.instance.firstUser;
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-    return [user, FakeData.instance.authToken];
+    return this.authDAO.login(this.normalizeAlias(alias), password);
   }
 
   public async logout(authToken: AuthToken): Promise<void> {
-    // Logic for logout
+    return this.authDAO.logout(authToken);
   }
 
   public async register(
@@ -31,10 +35,13 @@ export class UserService {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
-    const user = FakeData.instance.firstUser;
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-    return [user, FakeData.instance.authToken];
+    return this.authDAO.register(
+      firstName,
+      lastName,
+      this.normalizeAlias(alias),
+      password,
+      userImageBytes,
+      imageFileExtension
+    );
   }
 }

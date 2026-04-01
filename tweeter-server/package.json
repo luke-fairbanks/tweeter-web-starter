@@ -4,16 +4,25 @@
   "description": "Server module for Tweeter",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconf.json"
+    "build": "tsc -p tsconf.json",
+    "seed:data": "node scripts/seed-data.js",
+    "link:user:follows": "node scripts/link-user-follows.js",
+    "backfill:feed": "node scripts/backfill-feed-for-user.js"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudformation": "^3.1017.0",
+    "@aws-sdk/client-dynamodb": "^3.1017.0",
+    "@aws-sdk/client-s3": "^3.1017.0",
+    "@aws-sdk/lib-dynamodb": "^3.1017.0",
     "@types/uuid": "^8.3.4",
+    "bcryptjs": "^3.0.3",
     "date-fns": "^4.1.0",
     "tweeter-shared": "file:../tweeter-shared",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.114",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
   }

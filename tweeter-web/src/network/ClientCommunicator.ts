@@ -40,7 +40,11 @@ export class ClientCommunicator {
         return response;
       } else {
         const error = await resp.json();
-        throw new Error(error.errorMessage);
+        const message =
+          error?.message ||
+          error?.errorMessage ||
+          `Request failed with status ${resp.status}`;
+        throw new Error(message);
       }
     } catch (error) {
       console.error(error);

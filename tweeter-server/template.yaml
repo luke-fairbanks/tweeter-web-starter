@@ -15,8 +15,168 @@ Globals:
     Timeout: 10
     MemorySize: 256
     CodeUri: ./dist
+    Environment:
+      Variables:
+        USE_FAKE_DAO: "false"
+        USERS_TABLE_NAME: !Ref UsersTable
+        FOLLOWS_TABLE_NAME: !Ref FollowsTable
+        STATUSES_TABLE_NAME: !Ref StatusesTable
+        FEEDS_TABLE_NAME: !Ref FeedsTable
+        SESSIONS_TABLE_NAME: !Ref SessionsTable
+        PROFILE_IMAGE_BUCKET_NAME: !Ref ProfileImagesBucket
 
 Resources:
+  TweeterLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: TweeterLambdaExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:ConditionCheckItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !GetAtt UsersTable.Arn
+                  - !GetAtt FollowsTable.Arn
+                  - !Sub "${FollowsTable.Arn}/index/*"
+                  - !GetAtt StatusesTable.Arn
+                  - !GetAtt FeedsTable.Arn
+                  - !GetAtt SessionsTable.Arn
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:GetObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${ProfileImagesBucket}/image/*"
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: alias
+          AttributeType: S
+      KeySchema:
+        - AttributeName: alias
+          KeyType: HASH
+
+  FollowsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: followerAlias
+          AttributeType: S
+        - AttributeName: followeeAlias
+          AttributeType: S
+      KeySchema:
+        - AttributeName: followerAlias
+          KeyType: HASH
+        - AttributeName: followeeAlias
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: followee-index
+          KeySchema:
+            - AttributeName: followeeAlias
+              KeyType: HASH
+            - AttributeName: followerAlias
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  StatusesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userAlias
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: userAlias
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+
+  FeedsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userAlias
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: userAlias
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+
+  SessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: token
+          AttributeType: S
+      KeySchema:
+        - AttributeName: token
+          KeyType: HASH
+
+  ProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  ProfileImagesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ProfileImagesBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: PublicReadProfileImages
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${ProfileImagesBucket}/image/*"
+
   TweeterDependenciesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -32,6 +192,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/user/login.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -45,6 +206,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/user/register.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -58,6 +220,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/user/getUser.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -71,6 +234,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/user/logout.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -84,6 +248,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/status/loadMoreFeedItems.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -97,6 +262,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/status/loadMoreStoryItems.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -110,6 +276,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/status/postStatus.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -123,6 +290,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/loadMoreFollowees.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -136,6 +304,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/loadMoreFollowers.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -149,6 +318,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/getFolloweeCount.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -162,6 +332,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/getFollowerCount.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -175,6 +346,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/getIsFollowerStatus.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -188,6 +360,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/follow.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:
@@ -201,6 +374,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda/follow/unfollow.handler
+      Role: !GetAtt TweeterLambdaExecutionRole.Arn
       Layers:
         - !Ref TweeterDependenciesLayer
       Events:

@@ -1,0 +1,1670 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.0",
+    "title" : "tweeter-server"
+  },
+  "host" : "yunyfgvwob.execute-api.us-west-2.amazonaws.com",
+  "basePath" : "/Prod",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/follow" : {
+      "post" : {
+        "description" : "Follows the target user and returns the updated follower/followee counts.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-FollowFunction-WtNFRAzZzxdT/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/follow/status" : {
+      "post" : {
+        "description" : "Determines if the current user is following the target user.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-GetIsFollowerStatusFunction-v4vMBq1ak2mE/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/followee/count" : {
+      "post" : {
+        "description" : "Returns the total number of followees for a user.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-GetFolloweeCountFunction-SVEowm22iWJq/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/followee/list" : {
+      "post" : {
+        "description" : "Returns a paginated list of a user's followees.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-LoadMoreFolloweesFunction-SsT7dS6e2pzW/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/follower/count" : {
+      "post" : {
+        "description" : "Returns the total number of followers for a user.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-GetFollowerCountFunction-R8EvT1ZsjIUY/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/follower/list" : {
+      "post" : {
+        "description" : "Returns a paginated list of a user's followers.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-LoadMoreFollowersFunction-LwYNerFVXXXf/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/login" : {
+      "post" : {
+        "description" : "Authenticates a user and returns an auth token and user profile.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-LoginFunction-hGnlXkmP73rt/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/logout" : {
+      "post" : {
+        "description" : "Logs the user out and invalidates the session token.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-LogoutFunction-2yICKYezNZNp/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/register" : {
+      "post" : {
+        "description" : "Creates a new user account, returning an auth token and user profile.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-RegisterFunction-Th2JlmUS5TFq/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/status/feed/list" : {
+      "post" : {
+        "description" : "Returns a paginated list of statuses from users the current user follows (their feed).",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-LoadMoreFeedItemsFunction-VweEyRIypRBi/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/status/post" : {
+      "post" : {
+        "description" : "Creates a new status post for the current user.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-PostStatusFunction-XIhYeYMrfvf9/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/status/story/list" : {
+      "post" : {
+        "description" : "Returns a paginated list of statuses created by the user (their story).",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-LoadMoreStoryItemsFunction-BBuEaGS9LunB/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/unfollow" : {
+      "post" : {
+        "description" : "Unfollows the target user and returns the updated follower/followee counts.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-UnfollowFunction-v8sfHeGEHhtS/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    },
+    "/user/get" : {
+      "post" : {
+        "description" : "Retrieves a user profile by their alias.",
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "400 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          },
+          "500" : {
+            "description" : "500 response",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:656773487653:function:tweeter-server-GetUserFunction-AozGcBlTSHAO/invocations",
+          "httpMethod" : "POST",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            },
+            ".*\\\\[BadRequest\\\\].*" : {
+              "statusCode" : "400"
+            },
+            ".*\\\\[ServerError\\\\].*" : {
+              "statusCode" : "500"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "responseTransferMode" : "BUFFERED",
+          "type" : "aws_proxy"
+        }
+      },
+      "options" : {
+        "summary" : "CORS support",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response for CORS method",
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration" : {
+          "responses" : {
+            "default" : {
+              "statusCode" : "200",
+              "responseParameters" : {
+                "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST,GET,PUT,DELETE,PATCH'",
+                "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+              },
+              "responseTemplates" : {
+                "application/json" : "{}\n"
+              }
+            }
+          },
+          "requestTemplates" : {
+            "application/json" : "{\n  \"statusCode\" : 200\n}\n"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "mock"
+        }
+      }
+    }
+  },
+  "x-amazon-apigateway-documentation" : {
+    "version" : "1774309067",
+    "createdDate" : "2026-03-23T23:39:03Z",
+    "documentationParts" : [ {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follow/status",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follow/status",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Determines if the current user is following the target user."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follow",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follow",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Follows the target user and returns the updated follower/followee counts."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/followee/count",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/followee/count",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Returns the total number of followees for a user."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/followee/list",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/followee/list",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Returns a paginated list of a user's followees."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follower/count",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follower/count",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Returns the total number of followers for a user."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follower/list",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/follower/list",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Returns a paginated list of a user's followers."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/login",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/login",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Authenticates a user and returns an auth token and user profile."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/logout",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/logout",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Logs the user out and invalidates the session token."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/register",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/register",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Creates a new user account, returning an auth token and user profile."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/status/feed/list",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/status/feed/list",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Returns a paginated list of statuses from users the current user follows (their feed)."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/status/post",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/status/post",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Creates a new status post for the current user."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/status/story/list",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/status/story/list",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Returns a paginated list of statuses created by the user (their story)."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/unfollow",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/unfollow",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Unfollows the target user and returns the updated follower/followee counts."
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/user/get",
+        "method" : "OPTIONS"
+      },
+      "properties" : {
+        "summary" : "CORS support"
+      }
+    }, {
+      "location" : {
+        "type" : "METHOD",
+        "path" : "/user/get",
+        "method" : "POST"
+      },
+      "properties" : {
+        "description" : "Retrieves a user profile by their alias."
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/follow/status",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/follow",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/followee/count",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/followee/list",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/follower/count",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/follower/list",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/login",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/logout",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/register",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/status/feed/list",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/status/post",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/status/story/list",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/unfollow",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    }, {
+      "location" : {
+        "type" : "RESPONSE",
+        "path" : "/user/get",
+        "method" : "OPTIONS",
+        "statusCode" : "200"
+      },
+      "properties" : {
+        "description" : "Default response for CORS method"
+      }
+    } ]
+  },
+  "x-amazon-apigateway-security-policy" : "TLS_1_0"
+}

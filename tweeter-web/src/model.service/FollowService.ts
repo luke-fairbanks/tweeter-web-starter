@@ -5,13 +5,41 @@ import { ServerFacade } from "../network/ServerFacade";
 export class FollowService implements Service {
   private facade = new ServerFacade();
 
+  private canonicalAlias(alias: string): string {
+    return alias.startsWith("@") ? alias.slice(1).toLowerCase() : alias.toLowerCase();
+  }
+
+  private dedupeUsers(users: User[]): User[] {
+    const seen = new Set<string>();
+    const deduped: User[] = [];
+
+    for (const user of users) {
+      const key = this.canonicalAlias(user.alias);
+      if (seen.has(key)) {
+        continue;
+      }
+
+      seen.add(key);
+      deduped.push(user);
+    }
+
+    return deduped;
+  }
+
   public async loadMoreFollowees(
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    return await this.facade.loadMoreFollowees({ token: authToken.token, userAlias, pageSize, lastItem });
+    const [users, hasMore] = await this.facade.loadMoreFollowees({
+      token: authToken.token,
+      userAlias,
+      pageSize,
+      lastItem,
+    });
+
+    return [this.dedupeUsers(users), hasMore];
   }
 
   public async loadMoreFollowers(
@@ -20,7 +48,14 @@ export class FollowService implements Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    return await this.facade.loadMoreFollowers({ token: authToken.token, userAlias, pageSize, lastItem });
+    const [users, hasMore] = await this.facade.loadMoreFollowers({
+      token: authToken.token,
+      userAlias,
+      pageSize,
+      lastItem,
+    });
+
+    return [this.dedupeUsers(users), hasMore];
   }
 
   public async getIsFollowerStatus(
