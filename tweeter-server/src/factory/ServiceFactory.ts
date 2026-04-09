@@ -14,12 +14,16 @@ export class ServiceFactory {
   public static createUserService(): UserService {
     return new UserService(
       ServiceFactory.daoFactory.createUserDAO(),
-      ServiceFactory.daoFactory.createAuthDAO()
+      ServiceFactory.daoFactory.createSessionDAO(),
+      ServiceFactory.daoFactory.createImageDAO()
     );
   }
 
   public static createFollowService(): FollowService {
-    return new FollowService(ServiceFactory.daoFactory.createFollowDAO());
+    return new FollowService(
+      ServiceFactory.daoFactory.createFollowDAO(),
+      ServiceFactory.daoFactory.createSessionDAO()
+    );
   }
 
   public static createStatusService(): StatusService {

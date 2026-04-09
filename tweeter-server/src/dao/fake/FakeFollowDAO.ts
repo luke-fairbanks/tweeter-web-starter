@@ -1,9 +1,8 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { FakeData, User } from "tweeter-shared";
 import { FollowDAO } from "../interfaces/FollowDAO";
 
 export class FakeFollowDAO implements FollowDAO {
   public async loadMoreFollowees(
-    authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
@@ -12,7 +11,6 @@ export class FakeFollowDAO implements FollowDAO {
   }
 
   public async loadMoreFollowers(
-    authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
@@ -21,37 +19,36 @@ export class FakeFollowDAO implements FollowDAO {
   }
 
   public async getIsFollowerStatus(
-    authToken: AuthToken,
     user: User,
     selectedUser: User
   ): Promise<boolean> {
     return FakeData.instance.isFollower();
   }
 
-  public async getFolloweeCount(authToken: AuthToken, user: User): Promise<number> {
+  public async getFolloweeCount(user: User): Promise<number> {
     return FakeData.instance.getFolloweeCount(user.alias);
   }
 
-  public async getFollowerCount(authToken: AuthToken, user: User): Promise<number> {
+  public async getFollowerCount(user: User): Promise<number> {
     return FakeData.instance.getFollowerCount(user.alias);
   }
 
   public async follow(
-    authToken: AuthToken,
+    followerAlias: string,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
+    const followerCount = await this.getFollowerCount(userToFollow);
+    const followeeCount = await this.getFolloweeCount(userToFollow);
 
     return [followerCount, followeeCount];
   }
 
   public async unfollow(
-    authToken: AuthToken,
+    followerAlias: string,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    const followerCount = await this.getFollowerCount(authToken, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToUnfollow);
+    const followerCount = await this.getFollowerCount(userToUnfollow);
+    const followeeCount = await this.getFolloweeCount(userToUnfollow);
 
     return [followerCount, followeeCount];
   }

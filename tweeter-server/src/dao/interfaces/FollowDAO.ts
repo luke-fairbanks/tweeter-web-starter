@@ -1,36 +1,33 @@
-import { AuthToken, User } from "tweeter-shared";
+import { User } from "tweeter-shared";
 
 export interface FollowDAO {
   loadMoreFollowees(
-    authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]>;
 
   loadMoreFollowers(
-    authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]>;
 
   getIsFollowerStatus(
-    authToken: AuthToken,
     user: User,
     selectedUser: User
   ): Promise<boolean>;
 
-  getFolloweeCount(authToken: AuthToken, user: User): Promise<number>;
-  getFollowerCount(authToken: AuthToken, user: User): Promise<number>;
+  getFolloweeCount(user: User): Promise<number>;
+  getFollowerCount(user: User): Promise<number>;
 
   follow(
-    authToken: AuthToken,
+    followerAlias: string,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]>;
 
   unfollow(
-    authToken: AuthToken,
+    followerAlias: string,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]>;
 }

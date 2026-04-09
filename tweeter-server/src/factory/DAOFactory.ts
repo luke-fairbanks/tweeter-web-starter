@@ -1,16 +1,13 @@
-import { FakeAuthDAO } from "../dao/fake/FakeAuthDAO";
 import { FakeFollowDAO } from "../dao/fake/FakeFollowDAO";
 import { FakeImageDAO } from "../dao/fake/FakeImageDAO";
 import { FakeSessionDAO } from "../dao/fake/FakeSessionDAO";
 import { FakeStatusDAO } from "../dao/fake/FakeStatusDAO";
 import { FakeUserDAO } from "../dao/fake/FakeUserDAO";
-import { DynamoDBAuthDAO } from "../dao/dynamodb/DynamoDBAuthDAO";
 import { DynamoDBFollowDAO } from "../dao/dynamodb/DynamoDBFollowDAO";
 import { DynamoDBSessionDAO } from "../dao/dynamodb/DynamoDBSessionDAO";
 import { DynamoDBStatusDAO } from "../dao/dynamodb/DynamoDBStatusDAO";
 import { DynamoDBUserDAO } from "../dao/dynamodb/DynamoDBUserDAO";
 import { S3ImageDAO } from "../dao/s3/S3ImageDAO";
-import { AuthDAO } from "../dao/interfaces/AuthDAO";
 import { FollowDAO } from "../dao/interfaces/FollowDAO";
 import { ImageDAO } from "../dao/interfaces/ImageDAO";
 import { SessionDAO } from "../dao/interfaces/SessionDAO";
@@ -20,7 +17,6 @@ import { Env } from "../config/Env";
 
 export interface DAOFactory {
   createUserDAO(): UserDAO;
-  createAuthDAO(): AuthDAO;
   createFollowDAO(): FollowDAO;
   createStatusDAO(): StatusDAO;
   createSessionDAO(): SessionDAO;
@@ -30,10 +26,6 @@ export interface DAOFactory {
 export class FakeDAOFactory implements DAOFactory {
   public createUserDAO(): UserDAO {
     return new FakeUserDAO();
-  }
-
-  public createAuthDAO(): AuthDAO {
-    return new FakeAuthDAO();
   }
 
   public createFollowDAO(): FollowDAO {
@@ -57,15 +49,11 @@ export class DynamoDBDAOFactory implements DAOFactory {
   private userDAO = new DynamoDBUserDAO();
   private sessionDAO = new DynamoDBSessionDAO();
   private imageDAO = new S3ImageDAO();
-  private followDAO = new DynamoDBFollowDAO(this.sessionDAO);
+  private followDAO = new DynamoDBFollowDAO();
   private statusDAO = new DynamoDBStatusDAO();
 
   public createUserDAO(): UserDAO {
     return this.userDAO;
-  }
-
-  public createAuthDAO(): AuthDAO {
-    return new DynamoDBAuthDAO(this.userDAO, this.sessionDAO, this.imageDAO);
   }
 
   public createFollowDAO(): FollowDAO {

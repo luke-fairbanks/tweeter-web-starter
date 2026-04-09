@@ -5,10 +5,9 @@ import {
   PutCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { AuthToken, User } from "tweeter-shared";
+import { User } from "tweeter-shared";
 import { TableNames } from "../../config/TableNames";
 import { FollowDAO } from "../interfaces/FollowDAO";
-import { SessionDAO } from "../interfaces/SessionDAO";
 import { DynamoDBClientFactory } from "./DynamoDBClientFactory";
 
 type FollowItem = {
@@ -24,10 +23,7 @@ type UserItem = {
 };
 
 export class DynamoDBFollowDAO implements FollowDAO {
-  public constructor(private sessionDAO: SessionDAO) {}
-
   public async loadMoreFollowees(
-    authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
@@ -58,7 +54,6 @@ export class DynamoDBFollowDAO implements FollowDAO {
   }
 
   public async loadMoreFollowers(
-    authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
@@ -90,7 +85,6 @@ export class DynamoDBFollowDAO implements FollowDAO {
   }
 
   public async getIsFollowerStatus(
-    authToken: AuthToken,
     user: User,
     selectedUser: User
   ): Promise<boolean> {
@@ -108,7 +102,7 @@ export class DynamoDBFollowDAO implements FollowDAO {
     return !!result.Item;
   }
 
-  public async getFolloweeCount(authToken: AuthToken, user: User): Promise<number> {
+  public async getFolloweeCount(user: User): Promise<number> {
     const client = DynamoDBClientFactory.getDocumentClient();
     const result = await client.send(
       new QueryCommand({
@@ -124,7 +118,7 @@ export class DynamoDBFollowDAO implements FollowDAO {
     return result.Count ?? 0;
   }
 
-  public async getFollowerCount(authToken: AuthToken, user: User): Promise<number> {
+  public async getFollowerCount(user: User): Promise<number> {
     const client = DynamoDBClientFactory.getDocumentClient();
     const result = await client.send(
       new QueryCommand({
@@ -142,56 +136,42 @@ export class DynamoDBFollowDAO implements FollowDAO {
   }
 
   public async follow(
-    authToken: AuthToken,
+    followerAlias: string,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    const currentAlias = await this.sessionDAO.resolveAlias(authToken.token);
-    if (!currentAlias) {
-      throw new Error("[Unauthorized] Invalid or expired auth token");
-    }
-
-    if (currentAlias === userToFollow.alias) {
-      throw new Error("[BadRequest] You cannot follow yourself");
-    }
-
     const client = DynamoDBClientFactory.getDocumentClient();
     await client.send(
       new PutCommand({
         TableName: TableNames.follows,
         Item: {
-          followerAlias: currentAlias,
+          followerAlias,
           followeeAlias: userToFollow.alias,
         },
       })
     );
 
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
+    const followerCount = await this.getFollowerCount(userToFollow);
+    const followeeCount = await this.getFolloweeCount(userToFollow);
     return [followerCount, followeeCount];
   }
 
   public async unfollow(
-    authToken: AuthToken,
+    followerAlias: string,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    const currentAlias = await this.sessionDAO.resolveAlias(authToken.token);
-    if (!currentAlias) {
-      throw new Error("[Unauthorized] Invalid or expired auth token");
-    }
-
     const client = DynamoDBClientFactory.getDocumentClient();
     await client.send(
       new DeleteCommand({
         TableName: TableNames.follows,
         Key: {
-          followerAlias: currentAlias,
+          followerAlias,
           followeeAlias: userToUnfollow.alias,
         },
       })
     );
 
-    const followerCount = await this.getFollowerCount(authToken, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToUnfollow);
+    const followerCount = await this.getFollowerCount(userToUnfollow);
+    const followeeCount = await this.getFolloweeCount(userToUnfollow);
     return [followerCount, followeeCount];
   }
 
